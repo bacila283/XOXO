@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Крестики-нолики | Telegram Mini App</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🎮 Крестики-нолики</h1>
+            <div class="theme-info">
+                <span id="themeName">Тема</span>
+                <button id="changeTheme" class="theme-btn">🎨 Сменить тему</button>
+            </div>
+        </header>
+
+        <div class="game-info">
+            <div class="player-turn" id="playerTurn">
+                Ход: <span class="x-turn">❌ Ваш ход</span>
+            </div>
+        </div>
+
+        <div class="game-board" id="gameBoard">
+            <!-- Игровое поле будет создано через JS -->
+        </div>
+
+        <div class="controls">
+            <button id="restartBtn" class="btn restart-btn">🔄 Новая игра</button>
+        </div>
+
+        <div class="status-message" id="statusMessage"></div>
+
+        <!-- Новый блок для кода победы -->
+        <div class="win-code-container" id="winCodeContainer" style="display: none;">
+            <div class="win-code-header">
+                <span class="trophy-icon">🏆</span>
+                <h3>Код победы:</h3>
+            </div>
+            <div class="win-code-display">
+                <div class="win-code" id="winCode">XXXXX</div>
+                <button class="copy-btn" id="copyCodeBtn">
+                    <span class="copy-icon">📋</span>
+                    <span class="copy-text">Копировать</span>
+                </button>
+            </div>
+            <div class="win-code-message" id="copyMessage"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
