@@ -1,55 +1,337 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Крестики-нолики | Telegram Mini App</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+<title>Тур в Светлогорск</title>
+
+<style>
+:root {
+  --accent: #ff9800;
+  --bg: #0f172a;
+  --text: #ffffff;
+  --overlay: rgba(0,0,0,0.45);
+}
+
+body.light {
+  --bg: #f5f7fa;
+  --text: #0f172a;
+  --overlay: rgba(255,255,255,0.5);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: system-ui, sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+  transition: background 0.4s, color 0.4s;
+}
+
+#slider {
+  height: 100vh;
+  transition: transform 0.8s ease-in-out;
+}
+
+.slide {
+  height: 100vh;
+  padding: 60px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.slide::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--overlay);
+}
+
+.slide > * {
+  position: relative;
+  z-index: 2;
+}
+
+h1 {
+  font-size: clamp(36px, 6vw, 64px);
+  margin-bottom: 16px;
+}
+
+h2 {
+  font-size: clamp(26px, 4vw, 42px);
+  margin-bottom: 12px;
+}
+
+p {
+  font-size: clamp(16px, 2.5vw, 20px);
+  max-width: 720px;
+  line-height: 1.5;
+}
+
+.btn {
+  margin-top: 24px;
+  padding: 14px 30px;
+  background: var(--accent);
+  color: #000;
+  font-weight: 700;
+  border-radius: 30px;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  transform: scale(1.07);
+}
+
+/* Точки навигации */
+#dots {
+  position: fixed;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 10;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #888;
+  cursor: pointer;
+}
+
+.dot.active {
+  background: var(--accent);
+}
+
+/* Переключатель темы */
+#themeToggle {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 20;
+  background: var(--accent);
+  border: none;
+  border-radius: 20px;
+  padding: 8px 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+#map {
+  width: 100%;
+  max-width: 900px;
+  height: 420px;
+  border-radius: 20px;
+  margin-top: 24px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+}
+
+</style>
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <h1>🎮 Крестики-нолики</h1>
-            <div class="theme-info">
-                <span id="themeName">Тема</span>
-                <button id="changeTheme" class="theme-btn">🎨 Сменить тему</button>
-            </div>
-        </header>
 
-        <div class="game-info">
-            <div class="player-turn" id="playerTurn">
-                Ход: <span class="x-turn">❌ Ваш ход</span>
-            </div>
-        </div>
+<button id="themeToggle">🌙</button>
 
-        <div class="game-board" id="gameBoard">
-            <!-- Игровое поле будет создано через JS -->
-        </div>
+<div id="slider">
 
-        <div class="controls">
-            <button id="restartBtn" class="btn restart-btn">🔄 Новая игра</button>
-        </div>
+  <section class="slide" style="background-image:url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e');">
+    <h1>Светлогорск</h1>
+    <p>Балтийский курорт для тех, кто любит свободу, стиль и эмоции</p>
+    <a class="btn" href="#contact">Поехали 🚀</a>
+  </section>
 
-        <div class="status-message" id="statusMessage"></div>
+  <section class="slide" style="background-image:url('https://images.unsplash.com/photo-1523413651479-597eb2da0ad6');">
+    <h2>Лес и воздух</h2>
+    <p>
+      Светлогорск утопает в соснах. Тут реально хочется дышать глубже,
+      гулять часами и забыть про городскую суету.
+    </p>
+  </section>
 
-        <!-- Новый блок для кода победы -->
-        <div class="win-code-container" id="winCodeContainer" style="display: none;">
-            <div class="win-code-header">
-                <span class="trophy-icon">🏆</span>
-                <h3>Код победы:</h3>
-            </div>
-            <div class="win-code-display">
-                <div class="win-code" id="winCode">XXXXX</div>
-                <button class="copy-btn" id="copyCodeBtn">
-                    <span class="copy-icon">📋</span>
-                    <span class="copy-text">Копировать</span>
-                </button>
-            </div>
-            <div class="win-code-message" id="copyMessage"></div>
-        </div>
-    </div>
+  <section class="slide" style="background-image:url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee');">
+    <h2>Балтийское море</h2>
+    <p>
+      Пляжи, волны, ветер и тот самый балтийский вайб.
+      Закаты здесь — отдельный вид искусства.
+    </p>
+  </section>
 
-    <script src="script.js"></script>
+  <section class="slide" style="background-image:url('https://images.unsplash.com/photo-1491553895911-0055eca6402d');">
+    <h2>Европейская архитектура</h2>
+    <p>
+      Немецкие виллы, узкие улочки и ощущение, что ты где-то
+      между Берлином и морем.
+    </p>
+  </section>
+
+  <section class="slide" style="background-image:url('https://images.unsplash.com/photo-1492724441997-5dc865305da7');">
+    <h2>Молодёжный движ</h2>
+    <p>
+      Кафе, бары, вечерние прогулки, музыка и новые знакомства.
+      Светлогорск живёт ночью.
+    </p>
+  </section>
+
+  <section class="slide">
+    <h2>Маршрут тура</h2>
+    <p>Прогулка по самым атмосферным местам Светлогорска</p>
+
+    <div id="map"></div>
+  </section>
+
+  <section class="slide" id="contact" style="background-image:url('https://images.unsplash.com/photo-1501785888041-af3ef285b470');">
+    <h2>Готов поехать?</h2>
+    <p>Собирай рюкзак и пиши нам</p>
+    <a class="btn" href="https://t.me/your_tg">Telegram ✉️</a>
+  </section>
+
+
+
+
+</div>
+
+<div id="dots"></div>
+
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+const slider = document.getElementById('slider');
+const slides = document.querySelectorAll('.slide');
+const dotsContainer = document.getElementById('dots');
+const toggle = document.getElementById('themeToggle');
+
+let current = 0;
+let isScrolling = false;
+
+/* Точки */
+slides.forEach((_, i) => {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i === 0 ? ' active' : '');
+  d.onclick = () => goTo(i);
+  dotsContainer.appendChild(d);
+});
+
+const dots = document.querySelectorAll('.dot');
+
+function goTo(i) {
+  if (i < 0 || i >= slides.length) return;
+  current = i;
+  slider.style.transform = `translateY(-${i * 100}vh)`;
+  dots.forEach(d => d.classList.remove('active'));
+  dots[i].classList.add('active');
+}
+
+/* Скролл */
+window.addEventListener('wheel', e => {
+  if (isScrolling) return;
+  isScrolling = true;
+  e.deltaY > 0 ? goTo(current + 1) : goTo(current - 1);
+  setTimeout(() => isScrolling = false, 900);
+});
+
+/* Свайпы */
+let startY = 0;
+window.addEventListener('touchstart', e => startY = e.touches[0].clientY);
+window.addEventListener('touchend', e => {
+  const d = startY - e.changedTouches[0].clientY;
+  if (Math.abs(d) > 50) d > 0 ? goTo(current + 1) : goTo(current - 1);
+});
+
+/* Тема */
+function setTheme(t) {
+  document.body.classList.toggle('light', t === 'light');
+  toggle.textContent = t === 'light' ? '🌙' : '☀';
+  localStorage.setItem('theme', t);
+}
+
+toggle.onclick = () => {
+  const t = document.body.classList.contains('light') ? 'dark' : 'light';
+  setTheme(t);
+};
+
+setTheme(localStorage.getItem('theme') || 'dark');
+</script>
+
+<script>
+let mapInitialized = false;
+
+function initMap() {
+  if (mapInitialized) return;
+  mapInitialized = true;
+
+  const map = L.map('map', {
+    zoomControl: false,
+    dragging: true,
+    scrollWheelZoom: false,
+    attributionControl: false
+  }).setView([54.9447, 20.1515], 14);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap'
+  }).addTo(map);
+
+  const route = [
+    { name: "ЖД вокзал", coords: [54.9468, 20.1545] },
+    { name: "Сосновый лес", coords: [54.9452, 20.1480] },
+    { name: "Пляж", coords: [54.9426, 20.1451] },
+    { name: "Променад", coords: [54.9412, 20.1479] },
+    { name: "Бар / тусовка", coords: [54.9440, 20.1520] }
+  ];
+
+  const latlngs = [];
+
+  route.forEach(point => {
+    latlngs.push(point.coords);
+
+    L.marker(point.coords)
+      .addTo(map)
+      .bindPopup(`<b>${point.name}</b>`);
+  });
+
+  L.polyline(latlngs, {
+    color: '#ff9800',
+    weight: 4,
+    opacity: 0.9
+  }).addTo(map);
+}
+
+/* Инициализация карты только когда дошли до слайда */
+const mapSlideIndex = [...document.querySelectorAll('.slide')]
+  .findIndex(s => s.querySelector('#map'));
+
+function checkMap() {
+  if (current === mapSlideIndex) {
+    setTimeout(initMap, 300);
+  }
+}
+
+/* Вставляем хук в переходы */
+const originalGoTo = goTo;
+goTo = function(i) {
+  originalGoTo(i);
+  checkMap();
+};
+</script>
+
+
 </body>
 </html>
