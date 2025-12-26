@@ -3,25 +3,22 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<link
-  rel="stylesheet"
-  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-/>
 <title>Тур в Светлогорск</title>
 
 <style>
 :root {
   --accent: #ff9800;
-  --bg: #0f172a;
+  --bg: #0b1220;
   --text: #ffffff;
-  --overlay: rgba(0,0,0,0.45);
+  --card-bg: #111827;
 }
 
 body.light {
-  --bg: #f5f7fa;
+  --bg: #f3f4f6;
   --text: #0f172a;
-  --overlay: rgba(255,255,255,0.5);
+  --card-bg: #ffffff;
 }
+
 
 * {
   margin: 0;
@@ -38,29 +35,24 @@ body {
 }
 
 #slider {
-  height: 100vh;
+  height: calc(var(--vh) * 100);
   transition: transform 0.8s ease-in-out;
 }
 
 .slide {
-  height: 100vh;
-  padding: 60px 20px;
+  height: calc(var(--vh) * 100);
+  padding: 80px 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
-  background-size: cover;
-  background-position: center;
-  position: relative;
+  background: var(--bg);
+}
+.slide::after {
+  display: none;
 }
 
-.slide::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--overlay);
-}
 
 .slide > * {
   position: relative;
@@ -144,6 +136,36 @@ p {
   box-shadow: 0 10px 40px rgba(0,0,0,0.4);
 }
 
+.photo-collage {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  width: 100%;
+  max-width: 720px;
+  margin-top: 32px;
+  margin-bottom: 32px;
+}
+
+.photo-collage img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 18px;
+  transition: transform 0.4s, box-shadow 0.4s;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+.photo-collage img:hover {
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  #dots {
+    display: none;
+  }
+}
+
+
 </style>
 </head>
 <body>
@@ -152,52 +174,79 @@ p {
 
 <div id="slider">
 
-  <section class="slide" style="background-image:url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e');">
+  <section class="slide">
     <h1>Светлогорск</h1>
     <p>Балтийский курорт для тех, кто любит свободу, стиль и эмоции</p>
     <a class="btn" href="#contact">Поехали 🚀</a>
+    
+    <div class="photo-collage">
+        <img src="./suncity_assets/main/1.jpg">
+        <img src="./suncity_assets/main/2.jpg">
+        <img src="./suncity_assets/main/3.jpg">
+        <img src="./suncity_assets/main/4.jpg">
+    </div>
+    
   </section>
 
-  <section class="slide" style="background-image:url('https://images.unsplash.com/photo-1523413651479-597eb2da0ad6');">
-    <h2>Лес и воздух</h2>
-    <p>
-      Светлогорск утопает в соснах. Тут реально хочется дышать глубже,
-      гулять часами и забыть про городскую суету.
-    </p>
+  <section class="slide">
+    <h1>Начнем знакомство с историческим Königsberg!</h1>
+    <p>Пройдемся по рыбацкой деревне и узнам тайны острова Канта</p>    
+    <div class="photo-collage">
+        <img src="./suncity_assets/slide_1/1.jpg">
+        <img src="./suncity_assets/slide_1/2.jpg">
+    </div>
+    <p>Успеем окунуться в современный Cuberpunk на трамвае времени</p>
+    <div class="photo-collage">
+        <img src="./suncity_assets/slide_1/3.png">
+        <img src="./suncity_assets/slide_1/4.png">
+    </div>
+    
   </section>
 
-  <section class="slide" style="background-image:url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee');">
-    <h2>Балтийское море</h2>
+  <section class="slide">
+    <h1>Теперь начнем бродить по Светлогорску</h1>
+    <p>Погуляем по городу, найдем Светлоёжиков и узнаем их историю, а также будем решать квест...</p>    
+    <div class="photo-collage">
+        <img src="./suncity_assets/slide_2/1.jpg">
+        <img src="./suncity_assets/slide_2/2.jpg">
+    </div>
+    <p>Добавим драйва с помощью серфа по волнам Балтийского моря, а вечером будем чиллить в СПА</p>
+    <div class="photo-collage">
+        <img src="./suncity_assets/slide_2/3.jpg">
+        <img src="./suncity_assets/slide_2/4.jpg">
+    </div>
+  </section>
+
+  <section class="slide">
+    <h2>Тут можно рассказать о городе или о Балтике море</h2>
     <p>
       Пляжи, волны, ветер и тот самый балтийский вайб.
       Закаты здесь — отдельный вид искусства.
     </p>
   </section>
 
-  <section class="slide" style="background-image:url('https://images.unsplash.com/photo-1491553895911-0055eca6402d');">
-    <h2>Европейская архитектура</h2>
-    <p>
-      Немецкие виллы, узкие улочки и ощущение, что ты где-то
-      между Берлином и морем.
-    </p>
-  </section>
-
-  <section class="slide" style="background-image:url('https://images.unsplash.com/photo-1492724441997-5dc865305da7');">
-    <h2>Молодёжный движ</h2>
-    <p>
-      Кафе, бары, вечерние прогулки, музыка и новые знакомства.
-      Светлогорск живёт ночью.
-    </p>
+  <section class="slide">
+    <h1>А теперь чтобы не заскучать мы берет велики и... 27 километров вдоль Балтики... Балдеж + ЗОЖ = кайф</h1>
+    <p>В своем темпе, не спеша, с остановками на покушать и поглазеть</p>    
+    <div class="photo-collage">
+        <img src="./suncity_assets/slide_3/1.jpg">
+        <img src="./suncity_assets/slide_3/2.jpg">
+    </div>
+    <p>И вечер мы проведем на Куршская косе. Зайдем в чудной танцующий лес и с высока посмотрим на нашу Отчизну</p>
+    <div class="photo-collage">
+        <img src="./suncity_assets/slide_3/3.jpg">
+        <img src="./suncity_assets/slide_3/4.jpg">
+    </div>
   </section>
 
   <section class="slide">
-    <h2>Маршрут тура</h2>
-    <p>Прогулка по самым атмосферным местам Светлогорска</p>
-
-    <div id="map"></div>
+    <h2>Тут еще какой-то текст</h2>
+    <p>
+      и тут какое-то описание + картинки
+    </p>
   </section>
 
-  <section class="slide" id="contact" style="background-image:url('https://images.unsplash.com/photo-1501785888041-af3ef285b470');">
+  <section class="slide" id="contact">
     <h2>Готов поехать?</h2>
     <p>Собирай рюкзак и пиши нам</p>
     <a class="btn" href="https://t.me/your_tg">Telegram ✉️</a>
@@ -210,10 +259,18 @@ p {
 
 <div id="dots"></div>
 
-
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
 <script>
+
+function setVh() {
+  document.documentElement.style.setProperty(
+    '--vh',
+    `${window.innerHeight * 0.01}px`
+  );
+}
+setVh();
+window.addEventListener('resize', setVh);
+
+
 const slider = document.getElementById('slider');
 const slides = document.querySelectorAll('.slide');
 const dotsContainer = document.getElementById('dots');
@@ -241,20 +298,36 @@ function goTo(i) {
 }
 
 /* Скролл */
+let lastWheelTime = 0;
+
 window.addEventListener('wheel', e => {
-  if (isScrolling) return;
-  isScrolling = true;
-  e.deltaY > 0 ? goTo(current + 1) : goTo(current - 1);
-  setTimeout(() => isScrolling = false, 900);
-});
+  const now = Date.now();
+  if (now - lastWheelTime < 700) return;
+
+  lastWheelTime = now;
+
+  if (e.deltaY > 30) goTo(current + 1);
+  else if (e.deltaY < -30) goTo(current - 1);
+}, { passive: true });
+
 
 /* Свайпы */
 let startY = 0;
-window.addEventListener('touchstart', e => startY = e.touches[0].clientY);
+let endY = 0;
+
+window.addEventListener('touchstart', e => {
+  startY = e.touches[0].clientY;
+}, { passive: true });
+
 window.addEventListener('touchend', e => {
-  const d = startY - e.changedTouches[0].clientY;
-  if (Math.abs(d) > 50) d > 0 ? goTo(current + 1) : goTo(current - 1);
-});
+  endY = e.changedTouches[0].clientY;
+  const diff = startY - endY;
+
+  if (Math.abs(diff) > 60) {
+    diff > 0 ? goTo(current + 1) : goTo(current - 1);
+  }
+}, { passive: true });
+
 
 /* Тема */
 function setTheme(t) {
@@ -270,68 +343,5 @@ toggle.onclick = () => {
 
 setTheme(localStorage.getItem('theme') || 'dark');
 </script>
-
-<script>
-let mapInitialized = false;
-
-function initMap() {
-  if (mapInitialized) return;
-  mapInitialized = true;
-
-  const map = L.map('map', {
-    zoomControl: false,
-    dragging: true,
-    scrollWheelZoom: false,
-    attributionControl: false
-  }).setView([54.9447, 20.1515], 14);
-
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap'
-  }).addTo(map);
-
-  const route = [
-    { name: "ЖД вокзал", coords: [54.9468, 20.1545] },
-    { name: "Сосновый лес", coords: [54.9452, 20.1480] },
-    { name: "Пляж", coords: [54.9426, 20.1451] },
-    { name: "Променад", coords: [54.9412, 20.1479] },
-    { name: "Бар / тусовка", coords: [54.9440, 20.1520] }
-  ];
-
-  const latlngs = [];
-
-  route.forEach(point => {
-    latlngs.push(point.coords);
-
-    L.marker(point.coords)
-      .addTo(map)
-      .bindPopup(`<b>${point.name}</b>`);
-  });
-
-  L.polyline(latlngs, {
-    color: '#ff9800',
-    weight: 4,
-    opacity: 0.9
-  }).addTo(map);
-}
-
-/* Инициализация карты только когда дошли до слайда */
-const mapSlideIndex = [...document.querySelectorAll('.slide')]
-  .findIndex(s => s.querySelector('#map'));
-
-function checkMap() {
-  if (current === mapSlideIndex) {
-    setTimeout(initMap, 300);
-  }
-}
-
-/* Вставляем хук в переходы */
-const originalGoTo = goTo;
-goTo = function(i) {
-  originalGoTo(i);
-  checkMap();
-};
-</script>
-
-
 </body>
 </html>
